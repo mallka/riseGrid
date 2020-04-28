@@ -593,6 +593,8 @@
     border-left-style: none;
     border-right-width: 0px;
     border-right-style: solid;
+    padding: 0.2em 0.3em;
+    height: 3.5em;
 }
 
 .ui-jqgrid-jquery-ui.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td {

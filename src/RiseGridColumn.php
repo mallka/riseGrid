@@ -59,7 +59,10 @@
 
 			if ($this->formatter != null) {
 				$data['formatter']     = $this->formatter;
-				$data['formatoptions'] = $this->$formatoptions;
+
+			}
+			if ($this->formatoptions != null) {
+				$data['formatoptions'] = $this->formatoptions;
 			}
 
 			if(in_array($this->align,['left','right','center'])){
@@ -75,6 +78,18 @@
 				//string
 				if (in_array($key,['name','index','align','edittype'])){
 					$str.=$key.":'$val',";
+				}
+
+				else if($key=='formatter')
+				{
+					//@todo： 内置的一些formatter还没整理，需要进一步整理
+					if(in_array($val,['date']))
+					{
+						$str.=$key.":'$val',";
+					}
+					else{
+						$str.=$key.":$val,";
+					}
 				}
 				//int
 				else if($key=='width'){

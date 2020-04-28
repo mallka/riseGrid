@@ -2,6 +2,20 @@ Jqgrid widget
 =============
 对jqgrid的常用封装
 
+已支持
+------------
+- 字段搜索
+- 字段排序
+- 表头分组
+- 多选
+- 单元格渲染
+- 行编辑（待测试）
+- jqrid标准支持
+- 分组
+- 汇总
+- 滚动表格
+  
+
 安装
 ------------
 
@@ -145,6 +159,25 @@ php composer.phar require --prefer-dist yiirise/yii2-risegrid "dev-master"
                 position: "last"
           }'),
   ],
+
+//在jgrid后注入js函数或语句
+'mk_js_outside'=>new \yii\web\JsExpression("
+                    function ooo(){alert(1)};
+                  
+                  "),
+
+//在jqgrid的实例化中注册方法，主要是为了扩展各类响应事件或未包括在内的配置
+'mk_js'=>new \yii\web\JsExpression("
+    onSelectRow: function(id){
+      if(id && id!==list2_lastsel){
+        alert(id);
+      }
+    },
+  
+"),
+
+//jqgrid依赖bs4，但偶尔需要对他进行一些hack处理。
+'mk_css'=>".table{background-color:red}",
 
 
 

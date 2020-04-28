@@ -1,4 +1,4 @@
-Jqgrid widget
+Jqgrid widget for  yii2
 =============
 对jqgrid的常用封装
 
@@ -11,7 +11,7 @@ Jqgrid widget
 - 单元格渲染
 - 行编辑（待测试）
 - jqrid标准支持
-- 分组
+- 分组(待优化成更容易的测试)
 - 汇总
 - 滚动表格
   
@@ -36,152 +36,160 @@ php composer.phar require --prefer-dist yiirise/yii2-risegrid "dev-master"
 
 用法
 -----
-所有mk_开头的参数都是插件封装所需的开关之类的，非mk_开头的，直接映射为jqgrid的配置项
+所有mk_开头的参数都是插件封装所需的开关之类的，非mk_开头的，直接映射为jqgrid的配置项。
+有一些jqgrid变量、event是本widget尚未囊括在内的，可以在mk_js里设置。
 
 
 
 
 ```php
 <?= \mallka\risegrid\RiseGrid::widget([
-   //渲染ID，随意取名 
-  'render_id'=>'list2',
-  //分页区域id，随意取名
-  'pager'=>'list2_page',
-  //ajax获取数据的网址
-  'url'=>\yii\helpers\Url::to(['user-backend/ajax_search']),
-  
-  //单元格编辑后提交的网址，不给就开启
-  'cellurl'=>\yii\helpers\Url::to(['user-backend/ajax_searchaaaa']),
-  
-  //行编辑后提交的网址，不给就不开启
-  //'editurl'=>'a',
-  
+      #整个jqGrid的ID，该值将得到：
+      #选中行的变量：list2_lastsel;
+      #jqgrid的实例：{$this->render_id}_grid;
+      #jqgrid的实例：jqgrid ，如果一个页面有多个jqgrid的话，该值永远指向最后一个
+      'render_id' => 'list2',
 
-   //语言，内置好了en和zh-CN 
-  'mk_language'=>'zh-CN',
-  
-  //ActiveRecord 实例或数组配置
-  'mk_model'=>$userBackend,
-  
-  //具体数组配置
-  //	'mk_model'=>[
-  //		//full
-  //		[
-  //			'label'  => '测试以下',
-  //
-  //			//we suggest name = index,
-  //			'name'  => '',
-  //			'index' => '',
-  //
-  //			//default width is 40
-  //			'width' => 40,
-  //			'align' => 'left',
-  //
-  //			//
-  //			'key'   => false,
-  //
-  //			 //hidden options, Boolean
-  //			'hidden'=>false,
-  //			'hidedlg'=>false,
-  //
-  //			//display render
-  //			'formatter'=>"",
-  //			'formatoptions'=>'',
-  //
-  //			//edit switch
-  //			'editable' => false,
-  //			'edittype'=>'',
-  //			'editoptions'=>'',
-  //		],
-  //
-  //		//base
-  //		[
-  //			'label'  => '基本',
-  //			'name'  => 'base',
-  //			'index' => 'base',
-  //		],
-  //
-  //
-  //	],
+      #分类和按钮组的渲染id
+      'pager'     => 'list2_page',
 
+      #数据加载的网址
+      'url'       => \yii\helpers\Url::to([ 'user-backend/ajax_search' ]),
 
+      #单元格提交的网址，该值不能与editurl共存
+      #'cellurl'=>\yii\helpers\Url::to(['user-backend/ajax_searchaaaa']),
 
+      #行编辑提交的网址，该值不能和cellurl共存
+      #'editurl'=>\yii\helpers\Url::to(['user-backend/ajax_searchaaaa']),
 
+      'mk_language'      => 'zh-CN',
 
-    
-    
-  'mk_key'=>'id',				 #额外指定key,It will orverride ml_model config opts
-  //	'mk_hidden_column'=>['username'],		 #隐藏渲染的字段
-  //	'mk_remove_column'=>['id'],  #不要渲染的字段
+      //使用某ActiveRecord 实例													
+      #'mk_model'=>$userBackend,
 
-   //顶部搜索
-  'mk_top_search' => false,
+      //或者自定义
+      'mk_model'         => [
+          //full
+          [
+              'label'         => '测试以下',
 
-  //表格后追加内容
-  'mk_append'=>"Hel\'lo",
+              //we suggest name = index,
+              'name'          => 'username',
+              'index'         => 'username',
 
-  //替换jqgrid的方法区域
-  'mk_extra'=>new \yii\web\JsExpression("
-        //标题，提示，关闭按钮，model参数, 替换掉自带的提示组件。
-        info_dialog: function (caption, content, c_b, modalopt) {
-            layer.alert(content, {
-                icon: 2,
-                skin: 'layer-ext-moon'
-            })
-        },
+              //default width is 40
+              'width'         => 40,
+              'align'         => 'left',
 
-  "),
+              #是否主键
+              'key'           => false,
 
-  //加一些按钮          
-  'mk_button_extra'=>[
+              #隐藏设置
+              'hidden'        => false,
+              'hidedlg'       => false,
+
+              #显示的渲染设置
+              'formatter'     => "",
+              'formatoptions' => '',
+
+              #编辑配置
+              'editable'      => false,
+              'edittype'      => '',
+              'editoptions'   => '',
+          ],
+
+          //base
+          [
+              'label'     => '基本',
+              'name'      => 'id',
+              'index'     => 'id',
+              'formatter' => 'yesno',
+          ],
+
+          [
+              'label'         => '时间',
+              'name'          => 'created_at',
+              'index'         => 'created_at',
+              'formatter'     => 'date',
+              'formatoptions' => "{srcformat:'u',newformat:'Y-m-d H:i:s'}",
+          ],
+
+      ],
+
+      #额外指定key,建议填写
+      'mk_key'           => 'id',
+
+      #隐藏渲染的字段
+      'mk_hidden_column' => [ 'username' ],
+
+      #不要渲染的字段
+      'mk_remove_column' => [ 'id' ],
+
+      'mk_top_search'   => false,
+
+      //表格底部的html代码，注意单双引号的转意
+      'mk_append'       => "Hel\'lo",
+
+      //jqgrid内置模块的重写
+      'mk_extra'        => new \yii\web\JsExpression("
+            //标题，提示，关闭按钮，model参数, 替换掉自带的提示组件。
+            info_dialog: function (caption, content, c_b, modalopt) {
+                layer.alert(content, {
+                    icon: 2,
+                    skin: 'layer-ext-moon'
+                })
+            },
+
+      "),
+
+      //扩展按钮
+      'mk_button_extra' => [
           new \yii\web\JsExpression('{
-                caption: "Adddd",           //按钮标题
-                buttonicon: "ui-icon-add",  //icon的类名
-                onClickButton: function () {  //响应方法
-                    alert("Adding Row");
-                },
-                position: "last"            //位置
-          }'),
+                    caption: "Adddd",
+                    buttonicon: "ui-icon-add",
+                    onClickButton: function () {
+                        alert("Adding Row");
+                    },
+                    position: "last"
+              }'),
           new \yii\web\JsExpression('{
-                caption: "delete",
-                buttonicon: "ui-icon-add",
-                onClickButton: function () {
-                    alert("Adding Row");
-                },
-                position: "last"
-          }'),
+                    caption: "delete",
+                    buttonicon: "ui-icon-add",
+                    onClickButton: function () {
+                        alert("Adding Row");
+                    },
+                    position: "last"
+              }'),
           new \yii\web\JsExpression('{
-                caption: "Hiii",
-                buttonicon: "ui-icon-add",
-                onClickButton: function () {
-                    alert("Adding Row");
-                },
-                position: "last"
-          }'),
-  ],
+                    caption: "Hiii",
+                    buttonicon: "ui-icon-add",
+                    onClickButton: function () {
+                        alert("Adding Row");
+                    },
+                    position: "last"
+              }'),
+      ],
 
-//在jgrid后注入js函数或语句
-'mk_js_outside'=>new \yii\web\JsExpression("
-                    function ooo(){alert(1)};
-                  
-                  "),
+      //jqgrid实例化后外面的代码
+      'mk_js_outside'   => new \yii\web\JsExpression("
+        function ooo(){alert(1)};
 
-//在jqgrid的实例化中注册方法，主要是为了扩展各类响应事件或未包括在内的配置
-'mk_js'=>new \yii\web\JsExpression("
-    onSelectRow: function(id){
-      if(id && id!==list2_lastsel){
-        alert(id);
-      }
-    },
-  
-"),
+      "),
+      //jqgird实例化内部代码，可以是jqgird的配置，也可以是各类事件
+      'mk_js'           => new \yii\web\JsExpression("
+            cellEdit:true,
 
-//jqgrid依赖bs4，但偶尔需要对他进行一些hack处理。
-'mk_css'=>".table{background-color:red}",
+      "),
+      //css内容会被压缩后输出
+      'mk_css'          => ".table{background-color:red}",
 
+      //字段的渲染响应函数
+      'mk_formatter'    => new \yii\web\JsExpression("
+        /**可以存放很多函数**/
+        function yesno(value) {return value+1;}
+      "),
 
-
-]); ?>
+  ]); ?>
 ```
 
 
@@ -231,3 +239,5 @@ function my_value(value) {
  return "My value: "+value.val();
 }
 ```
+
+TBC,

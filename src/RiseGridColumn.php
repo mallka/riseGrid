@@ -122,5 +122,23 @@
 
 
 
+		/**
+		 * 根据一个数组[a=>b,....] 生成select类型的editpotions所需的字符串。
+		 * @param $arr
+		 *
+		 * @return string
+		 */
+		public function genSelectEditpotionsFromArr($arr){
+			$str="{value:'";
+			foreach($arr as $item=>$value)
+			{
+				$str.=$item.':'.$value.';';
+			}
+			$str = substr($str,0,-1)."'}";
+			return $str;
+		}
+
+
+
 	}
 

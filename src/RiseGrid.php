@@ -535,7 +535,7 @@ EOF;
 			}
 
 			$str = "	colNames:['" . implode("','", $header) . "'],\r\n";
-			$str = "	colModel:[" . implode(",", $data) . "],\r\n";
+			$str .= "	colModel:[" . implode(",", $data) . "],\r\n";
 
 			return $str;
 

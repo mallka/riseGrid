@@ -96,6 +96,10 @@ php composer.phar require --prefer-dist yiirise/yii2-risegrid "dev-master"
               'editable'      => false,
               'edittype'      => '',
               'editoptions'   => '',
+                
+              #字段是否可排序，默认可排序
+              'sortbale'  => false,
+
           ],
 
           //base
